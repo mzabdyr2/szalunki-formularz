@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ABC Szalunki - Formularz Dzierżawy</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- PDFMAKE - OBSŁUGA POLSKICH ZNAKÓW -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.min.js"></script>
@@ -142,18 +142,18 @@
             <div class="mb-8">
                 <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Region *</h3>
                 <p class="text-sm text-gray-600 mb-4">Wybierz region, w którym znajduje się budowa:</p>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg hover:border-red-600 cursor-pointer transition">
                         <input type="radio" name="region" value="Kraków" class="w-5 h-5 text-red-600" required>
                         <span class="ml-3 font-medium"> Kraków</span>
                     </label>
-                    
+
                     <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg hover:border-red-600 cursor-pointer transition">
                         <input type="radio" name="region" value="Śląsk" class="w-5 h-5 text-red-600" required>
                         <span class="ml-3 font-medium"> Śląsk</span>
                     </label>
-                    
+
                     <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg hover:border-red-600 cursor-pointer transition">
                         <input type="radio" name="region" value="Łódź" class="w-5 h-5 text-red-600" required>
                         <span class="ml-3 font-medium"> Łódź</span>
@@ -314,14 +314,14 @@
                     ABC Szalunki Zbigniew Szarawarski NIP: 6791745313, Regon: 389446266; Adres: Skotnicka 272; 30-394 Kraków, <br>
                     Maciej Szarawarski PHU PRATA NIP: 6762382380; Regon: 121462445; Adres: Skotnicka 272, 30-394 Kraków,<br>
                     PRATA Sp. z o. o.; Nr KRS 0000906409; NIP 6762599837; Regon: 389416733; Adres: ul. Skotnicka 272, 30-394 Kraków.</p>
-                    
+
                     <p>Dane przetwarzane są w celu: przedstawienia oferty umowy, realizacji zawartej umowy, działań marketingu bezpośredniego oferowanych przez ADO usług, spełnienia obowiązku wynikającego z przepisów prawa, a zwłaszcza związanych z ustawą o rachunkowości, są niezbędne celem właściwej realizacji Umowy.</p>
-                    
+
                     <p>Odbiorcami udostępnionych danych osobowych będzie wyłącznie ADO oraz podmioty współpracujące z nim w ramach prowadzonej przez niego działalności gospodarczej.</p>
-                    
+
                     <p>Podanie danych jest dobrowolne, jednak brak ich udostępnienia skutkuje brakiem możliwości realizacji zawartej z ADO Umowy.</p>
                 </div>
-                
+
                 <label class="flex items-start mt-4">
                     <input type="checkbox" name="dataConsent" required class="w-5 h-5 text-red-600 mt-1 mr-3 flex-shrink-0">
                     <span class="text-sm text-gray-700">Potwierdzam zgodność danych do umowy i wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z powyższą informacją. *</span>
@@ -351,7 +351,7 @@
             const clientType = document.querySelector('input[name="clientType"]:checked')?.value;
             const firmaSection = document.getElementById('firmaSection');
             const osobaSection = document.getElementById('osobaSection');
-            
+
             if (clientType === 'firma') {
                 firmaSection.classList.remove('hidden');
                 osobaSection.classList.add('hidden');
@@ -379,7 +379,7 @@
         // ==========================================
         function createPDFWithNativeText(formData) {
             const content = [];
-            
+
             // HEADER - czerwone tło
             content.push({
                 table: {
@@ -393,7 +393,7 @@
                 layout: 'noBorders',
                 margin: [0, 0, 0, 20]
             });
-            
+
             // Funkcja dodawania sekcji
             function addSection(title) {
                 content.push({
@@ -414,7 +414,7 @@
                     margin: [0, 0, 0, 10]
                 });
             }
-            
+
             // Funkcja dodawania pola
             function addField(label, value) {
                 if (!value) return;
@@ -426,14 +426,14 @@
                     margin: [0, 2, 0, 4]
                 });
             }
-            
+
             // TYP DZIERŻAWCY
             addSection('TYP DZIERŻAWCY');
-            const clientTypeText = formData.clientType === 'firma' ? 'Firma' : 
+            const clientTypeText = formData.clientType === 'firma' ? 'Firma' :
                                  formData.clientType === 'osoba' ? 'Osoba fizyczna' : 'Nie wybrano';
             addField('Wybrany typ', clientTypeText);
             addField('Region', formData.region || 'Nie wybrano');
-            
+
             // DANE FIRMY
             if (formData.clientType === 'firma') {
                 addSection('1. DANE DZIERŻAWCY - FIRMA');
@@ -441,7 +441,7 @@
                 addField('REGON', formData.regon);
                 addField('Telefon', formData.phone);
                 addField('E-mail do faktur', formData.invoiceEmail);
-                
+
                 if (formData.applicantNameCompany || formData.applicantPhoneCompany || formData.applicantEmailCompany) {
                     content.push({ text: 'Osoba wnioskująca (jeśli inna niż dzierżawca):', bold: true, margin: [0, 5, 0, 3], color: '#666666' });
                     addField('Imię i nazwisko', formData.applicantNameCompany);
@@ -449,7 +449,7 @@
                     addField('E-mail', formData.applicantEmailCompany);
                 }
             }
-            
+
             // DANE OSOBY FIZYCZNEJ
             if (formData.clientType === 'osoba') {
                 addSection('1. DANE DZIERŻAWCY - OSOBA FIZYCZNA');
@@ -457,7 +457,7 @@
                 addField('PESEL', formData.pesel);
                 addField('Telefon', formData.phonePrivate);
                 addField('E-mail', formData.emailPrivate);
-                
+
                 if (formData.applicantName || formData.applicantPhone || formData.applicantEmail) {
                     content.push({ text: 'Osoba wnioskująca (jeśli inna niż dzierżawca):', bold: true, margin: [0, 5, 0, 3], color: '#666666' });
                     addField('Imię i nazwisko', formData.applicantName);
@@ -465,14 +465,14 @@
                     addField('E-mail', formData.applicantEmail);
                 }
             }
-            
+
             // INWESTYCJA
             addSection('2. INWESTYCJA');
             addField('Nazwa inwestycji', formData.investmentName);
             addField('Adres budowy', formData.constructionAddress);
             addField('Data rozpoczęcia', formData.startDate);
             addField('Przewidywany okres dzierżawy', formData.rentalPeriod);
-            
+
             // WYKONAWCA
             addSection('3. WYKONAWCA');
             addField('Nazwa wykonawcy', formData.contractorName);
@@ -480,7 +480,7 @@
             addField('Telefon kontaktowy', formData.contractorPhone);
             addField('Telefon na budowę', formData.constructionPhone);
             addField('Dodatkowe informacje', formData.contractorNotes);
-            
+
             // INWESTOR
             if (formData.investorName || formData.investorNip || formData.investorPhone || formData.investorEmail) {
                 addSection('4. INWESTOR');
@@ -489,7 +489,7 @@
                 addField('Telefon', formData.investorPhone);
                 addField('E-mail', formData.investorEmail);
             }
-            
+
             // GENERALNY WYKONAWCA
             if (formData.generalContractorName || formData.generalContractorNip || formData.generalContractorPhone) {
                 addSection('5. GENERALNY WYKONAWCA');
@@ -497,7 +497,7 @@
                 addField('NIP generalnego wykonawcy', formData.generalContractorNip);
                 addField('Telefon', formData.generalContractorPhone);
             }
-            
+
             // KIEROWNIK BUDOWY
             if (formData.constructionManagerName || formData.constructionManagerPhone || formData.constructionManagerEmail) {
                 addSection('6. KIEROWNIK BUDOWY');
@@ -505,31 +505,31 @@
                 addField('Telefon', formData.constructionManagerPhone);
                 addField('E-mail', formData.constructionManagerEmail);
             }
-            
+
             // UWAGI
             if (formData.requirements) {
                 addSection('7. UWAGI/OPIS ZAPOTRZEBOWANIA');
                 addField('Opis', formData.requirements);
             }
-            
+
             // ŹRÓDŁO KONTAKTU
             if (formData.contactSource) {
                 addSection('8. ŹRÓDŁO KONTAKTU DO ABC SZALUNKI');
                 addField('Skąd kontakt', formData.contactSource);
             }
-            
+
             // ZGODA RODO
             addSection('ZGODA RODO');
             const rodoStatus = formData.dataConsent ? 'WYRAŻONA' : 'NIE WYRAŻONA';
             addField('Status zgody na przetwarzanie danych osobowych', rodoStatus);
-            
+
             content.push({
                 text: 'Administrator danych: Grupa ABC szalunki\n(ABC Szalunki Zbigniew Szarawarski, Maciej Szarawarski PHU PRATA, PRATA Sp. z o.o.)',
                 fontSize: 8,
                 color: '#666666',
                 margin: [0, 5, 0, 0]
             });
-            
+
             // Definicja dokumentu
             const docDefinition = {
                 content: content,
@@ -566,7 +566,7 @@
                     font: 'Roboto'
                 }
             };
-            
+
             // Zwróć obiekt z metodami
             return {
                 save: function(filename) {
@@ -585,7 +585,7 @@
         function showStatus(message, type) {
             const statusEl = document.getElementById('statusMessage');
             statusEl.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'bg-blue-100', 'text-green-800', 'text-red-800', 'text-blue-800');
-            
+
             if (type === 'success') {
                 statusEl.classList.add('bg-green-100', 'text-green-800');
             } else if (type === 'error') {
@@ -593,7 +593,7 @@
             } else {
                 statusEl.classList.add('bg-blue-100', 'text-blue-800');
             }
-            
+
             statusEl.textContent = message;
         }
 
@@ -605,7 +605,7 @@
 
             try {
                 const formData = collectFormData();
-                
+
                 // Walidacja
                 if (!formData.clientType) throw new Error('Wybierz typ dzierżawcy');
                 if (!formData.region) throw new Error('Wybierz region');
@@ -615,18 +615,23 @@
                 if (!formData.contractorName) throw new Error('Wpisz nazwę wykonawcy');
 
                 showStatus('📄 Generowanie PDF z polskimi znakami (ą, ć, ę, ł, ń, ó, ś, ź, ż)...', 'info');
-                
+
                 const doc = createPDFWithNativeText(formData);
                 const timestamp = new Date().toISOString().slice(0,19).replace(/:/g, '-');
                 const filename = `ABC_Szalunki_Formularz_${timestamp}.pdf`;
-                
+
                 // Pobierz PDF lokalnie
                 doc.save(filename);
                 showStatus('✅ Formularz został pobrany w PDF! Wysyłanie do systemu...', 'success');
 
                 // Pobierz base64 dla uploadu
                 const pdfBase64 = await doc.getBase64();
-                
+
+                // Kopia danych do wysyłki - usuwamy KRS bo nie ma go w Excelu
+                // i powoduje przesuwanie się kolumn
+                const payloadFormData = { ...formData };
+                delete payloadFormData.krs;
+
                 await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -634,7 +639,7 @@
                     body: JSON.stringify({
                         pdfBase64: pdfBase64,
                         filename: filename,
-                        formData: formData
+                        formData: payloadFormData
                     })
                 });
 
