@@ -344,8 +344,9 @@
         // ==========================================
         // KONFIGURACJA
         // ==========================================
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzIQmZCR4l4ulEZYk_NMmJeFVjM3mg8_tT0qbqr57i-l_Se2R3-dTMPPKrV8IhuRKPyUw/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxlNWnyiAnyVFpLe7MP7pSYP3VCSCV-zuol_HEEnq4b99QuLQ1fvL2om-LcJDCrCvBJ/exec';
         const SHEET_ID = '117ZPtH4-2vgDPQh-tInjyjI9GE5xN82evgVFikvcNFQ';
+        
 
         function toggleClientType() {
             const clientType = document.querySelector('input[name="clientType"]:checked')?.value;
@@ -439,6 +440,7 @@
                 addSection('1. DANE DZIERŻAWCY - FIRMA');
                 addField('NIP', formData.nip);
                 addField('REGON', formData.regon);
+                addField('KRS', formData.krs);
                 addField('Telefon', formData.phone);
                 addField('E-mail do faktur', formData.invoiceEmail);
                 
@@ -570,11 +572,15 @@
             // Zwróć obiekt z metodami
             return {
                 save: function(filename) {
-                    pdfMake.createPdf(docDefinition).download(filename);
+                    // Robimy kopię (JSON.parse/stringify), aby pdfmake nie modyfikował oryginału
+                    const docDefinitionCopy = JSON.parse(JSON.stringify(docDefinition));
+                    pdfMake.createPdf(docDefinitionCopy).download(filename);
                 },
                 getBase64: function() {
                     return new Promise((resolve) => {
-                        pdfMake.createPdf(docDefinition).getBase64((data) => {
+                        // Tutaj też robimy świeżą kopię dla Base64
+                        const docDefinitionCopy = JSON.parse(JSON.stringify(docDefinition));
+                        pdfMake.createPdf(docDefinitionCopy).getBase64((data) => {
                             resolve('data:application/pdf;base64,' + data);
                         });
                     });
