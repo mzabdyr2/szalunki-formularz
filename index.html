@@ -1,659 +1,973 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ABC Szalunki - Formularz Dzierżawy</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- PDFMAKE - OBSŁUGA POLSKICH ZNAKÓW -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.min.js"></script>
-</head>
-<body class="bg-gray-50 min-h-screen">
-    <!-- Header -->
-    <header class="bg-white shadow-lg border-b-4 border-red-600 py-8">
-        <div class="container mx-auto px-4 text-center">
-            <div class="text-4xl font-bold text-red-600 mb-4">🏗️ ABC SZALUNKI</div>
-            <h1 class="text-2xl md:text-3xl text-gray-800 font-bold mb-2">Formularz Dzierżawy</h1>
-            <p class="text-lg text-gray-600">Załącznik nr 4 - Dane kontaktowe Dzierżawcy</p>
-        </div>
-    </header>
+    <!DOCTYPE html>
+    <html lang="pl">
 
-    <main class="container mx-auto px-4 py-8">
-        <form id="formularzForm" class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
-
-            <!-- Typ dzierżawcy -->
-            <div class="mb-8">
-                <h3 class="text-xl font-bold text-gray-800 mb-4">Typ dzierżawcy *</h3>
-                <div class="flex gap-8">
-                    <label class="flex items-center p-6 border-2 border-gray-300 rounded-lg hover:border-red-600 cursor-pointer">
-                        <input type="radio" name="clientType" value="firma" class="w-5 h-5 text-red-600" onchange="toggleClientType()" required>
-                        <span class="ml-4 font-medium text-lg">Firma</span>
-                    </label>
-                    <label class="flex items-center p-6 border-2 border-gray-300 rounded-lg hover:border-red-600 cursor-pointer">
-                        <input type="radio" name="clientType" value="osoba" class="w-5 h-5 text-red-600" onchange="toggleClientType()" required>
-                        <span class="ml-4 font-medium text-lg">Osoba fizyczna</span>
-                    </label>
-                </div>
-            </div>
-
-            <!-- Sekcja Firma -->
-            <div id="firmaSection" class="hidden mb-8">
-                <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">1. Dane dzierżawcy - firma</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">NIP *</label>
-                        <input type="text" name="nip" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">REGON</label>
-                        <input type="text" name="regon" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">KRS</label>
-                        <input type="text" name="krs" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Osoba upoważniona do podpisania umowy *</label>
-                        <input type="text" name="authorizedPerson" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Telefon *</label>
-                        <input type="tel" name="phone" placeholder="+48 123 456 789" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                </div>
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">E-mail do faktur *</label>
-                    <input type="email" name="invoiceEmail" placeholder="faktury@firma.pl" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                </div>
-
-                <!-- Osoba wnioskująca dla firmy -->
-                <div class="bg-gray-50 p-4 rounded-lg mb-4">
-                    <h4 class="text-lg font-medium text-gray-800 mb-3">Osoba wnioskująca (jeśli inna niż dzierżawca)</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Imię i nazwisko</label>
-                            <span class="text-xs text-gray-500 block mb-2">Opcjonalne</span>
-                            <input type="text" name="applicantNameCompany" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Telefon</label>
-                            <span class="text-xs text-gray-500 block mb-2">Opcjonalne</span>
-                            <input type="tel" name="applicantPhoneCompany" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">E-mail</label>
-                            <span class="text-xs text-gray-500 block mb-2">Opcjonalne</span>
-                            <input type="email" name="applicantEmailCompany" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sekcja Osoba fizyczna -->
-            <div id="osobaSection" class="hidden mb-8">
-                <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">1. Dane dzierżawcy - osoba fizyczna</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Imię i nazwisko *</label>
-                        <input type="text" name="fullName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">PESEL</label>
-                        <input type="text" name="pesel" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Telefon *</label>
-                        <input type="tel" name="phonePrivate" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">E-mail *</label>
-                        <input type="email" name="emailPrivate" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                </div>
-
-                <!-- Osoba wnioskująca -->
-                <div class="bg-gray-50 p-4 rounded-lg mb-4">
-                    <h4 class="text-lg font-medium text-gray-800 mb-3">Osoba wnioskująca (jeśli inna niż dzierżawca)</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Imię i nazwisko</label>
-                            <span class="text-xs text-gray-500 block mb-2">Opcjonalne</span>
-                            <input type="text" name="applicantName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Telefon</label>
-                            <span class="text-xs text-gray-500 block mb-2">Opcjonalne</span>
-                            <input type="tel" name="applicantPhone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">E-mail</label>
-                            <span class="text-xs text-gray-500 block mb-2">Opcjonalne</span>
-                            <input type="email" name="applicantEmail" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- REGION - NOWA SEKCJA -->
-            <div class="mb-8">
-                <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Region *</h3>
-                <p class="text-sm text-gray-600 mb-4">Wybierz region, w którym znajduje się budowa:</p>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg hover:border-red-600 cursor-pointer transition">
-                        <input type="radio" name="region" value="Kraków" class="w-5 h-5 text-red-600" required>
-                        <span class="ml-3 font-medium"> Kraków</span>
-                    </label>
-                    
-                    <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg hover:border-red-600 cursor-pointer transition">
-                        <input type="radio" name="region" value="Śląsk" class="w-5 h-5 text-red-600" required>
-                        <span class="ml-3 font-medium"> Śląsk</span>
-                    </label>
-                    
-                    <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg hover:border-red-600 cursor-pointer transition">
-                        <input type="radio" name="region" value="Łódź" class="w-5 h-5 text-red-600" required>
-                        <span class="ml-3 font-medium"> Łódź</span>
-                    </label>
-                </div>
-            </div>
-
-            <!-- 2. Inwestycja -->
-            <div class="mb-8">
-                <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">2. Inwestycja</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Nazwa inwestycji *</label>
-                        <span class="text-xs text-gray-500 block mb-2">Nazwa projektu budowlanego</span>
-                        <input type="text" name="investmentName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Adres budowy *</label>
-                        <span class="text-xs text-gray-500 block mb-2">Adres lokalizacji budowy</span>
-                        <input type="text" name="constructionAddress" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600" required>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Data rozpoczęcia *</label>
-                        <span class="text-xs text-gray-500 block mb-2">dd.mm.rrrr</span>
-                        <input type="date" name="startDate" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Przewidywany okres dzierżawy *</label>
-                        <select name="rentalPeriod" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600" required>
-                            <option value="">Wybierz okres</option>
-                            <option value="8 dni">8 dni</option>
-                            <option value="10-15 dni">10-15 dni</option>
-                            <option value="15-30 dni">15-30 dni</option>
-                            <option value="30-60 dni">30-60 dni</option>
-                            <option value="60 dni i więcej">60 dni i więcej</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 3. Wykonawca -->
-            <div class="mb-8">
-                <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">3. Wykonawca</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Nazwa wykonawcy *</label>
-                        <span class="text-xs text-gray-500 block mb-2">Nazwa firmy wykonawczej</span>
-                        <input type="text" name="contractorName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Osoba kontaktowa</label>
-                        <span class="text-xs text-gray-500 block mb-2">Imię i nazwisko</span>
-                        <input type="text" name="contactPerson" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Telefon</label>
-                        <span class="text-xs text-gray-500 block mb-2">Telefon kontaktowy</span>
-                        <input type="tel" name="contractorPhone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Telefon na budowę</label>
-                        <span class="text-xs text-gray-500 block mb-2">Telefon na budowę</span>
-                        <input type="tel" name="constructionPhone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Dodatkowe informacje</label>
-                    <textarea name="contractorNotes" rows="2" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600"></textarea>
-                </div>
-            </div>
-
-            <!-- 4. Inwestor -->
-            <div class="mb-8">
-                <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">4. Inwestor</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Nazwa inwestora</label>
-                        <input type="text" name="investorName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">NIP inwestora</label>
-                        <input type="text" name="investorNip" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Telefon</label>
-                        <input type="tel" name="investorPhone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">E-mail</label>
-                        <input type="email" name="investorEmail" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                </div>
-            </div>
-
-            <!-- 5. Generalny Wykonawca -->
-            <div class="mb-8">
-                <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">5. Generalny Wykonawca</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Nazwa generalnego wykonawcy</label>
-                        <input type="text" name="generalContractorName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">NIP generalnego wykonawcy</label>
-                        <input type="text" name="generalContractorNip" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Telefon</label>
-                        <input type="tel" name="generalContractorPhone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                </div>
-            </div>
-
-            <!-- 6. Kierownik budowy -->
-            <div class="mb-8">
-                <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">6. Kierownik budowy</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Imię i nazwisko</label>
-                        <input type="text" name="constructionManagerName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Telefon</label>
-                        <input type="tel" name="constructionManagerPhone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">E-mail</label>
-                        <input type="email" name="constructionManagerEmail" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-                    </div>
-                </div>
-            </div>
-
-            <!-- 7. Uwagi -->
-            <div class="mb-8">
-                <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">7. Uwagi/opis zapotrzebowania</h3>
-                <textarea name="requirements" rows="4" placeholder="Szczegółowy opis potrzeb dotyczących dzierżawy szalunków..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600"></textarea>
-            </div>
-
-            <!-- 8. Skąd kontakt -->
-            <div class="mb-8">
-                <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">8. Skąd kontakt do ABC Szalunki</h3>
-                <input type="text" name="contactSource" placeholder="np. strona internetowa, polecenie, reklama" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-600">
-            </div>
-
-            <!-- RODO -->
-            <div class="mb-8 p-4 bg-gray-100 rounded-lg">
-                <h4 class="font-bold text-gray-800 mb-3">Informacja o przetwarzaniu danych osobowych:</h4>
-                <div class="text-sm text-gray-700 space-y-3">
-                    <p>Zgodnie z ustawą odnośnie ochrony danych osobowych oraz Rozporządzenia Parlamentu Europejskiego i Rady (UE) 2016/679 Administratorem Danych Osobowych (ADO) jest Grupa ABC szalunki reprezentowana przez: <br><br>
-                    ABC Szalunki Zbigniew Szarawarski NIP: 6791745313, Regon: 389446266; Adres: Skotnicka 272; 30-394 Kraków, <br>
-                    Maciej Szarawarski PHU PRATA NIP: 6762382380; Regon: 121462445; Adres: Skotnicka 272, 30-394 Kraków,<br>
-                    PRATA Sp. z o. o.; Nr KRS 0000906409; NIP 6762599837; Regon: 389416733; Adres: ul. Skotnicka 272, 30-394 Kraków.</p>
-                    
-                    <p>Dane przetwarzane są w celu: przedstawienia oferty umowy, realizacji zawartej umowy, działań marketingu bezpośredniego oferowanych przez ADO usług, spełnienia obowiązku wynikającego z przepisów prawa, a zwłaszcza związanych z ustawą o rachunkowości, są niezbędne celem właściwej realizacji Umowy.</p>
-                    
-                    <p>Odbiorcami udostępnionych danych osobowych będzie wyłącznie ADO oraz podmioty współpracujące z nim w ramach prowadzonej przez niego działalności gospodarczej.</p>
-                    
-                    <p>Podanie danych jest dobrowolne, jednak brak ich udostępnienia skutkuje brakiem możliwości realizacji zawartej z ADO Umowy.</p>
-                </div>
-                
-                <label class="flex items-start mt-4">
-                    <input type="checkbox" name="dataConsent" required class="w-5 h-5 text-red-600 mt-1 mr-3 flex-shrink-0">
-                    <span class="text-sm text-gray-700">Potwierdzam zgodność danych do umowy i wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z powyższą informacją. *</span>
-                </label>
-            </div>
-
-            <!-- Status -->
-            <div id="statusMessage" class="mb-4 p-3 rounded-lg hidden"></div>
-
-            <!-- Przycisk -->
-            <div class="text-center">
-                <button type="button" onclick="submitForm()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-colors text-lg shadow-lg">
-                    📄 Wyślij formularz
-                </button>
-            </div>
-        </form>
-    </main>
-
-    <script>
-        // ==========================================
-        // KONFIGURACJA
-        // ==========================================
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxlNWnyiAnyVFpLe7MP7pSYP3VCSCV-zuol_HEEnq4b99QuLQ1fvL2om-LcJDCrCvBJ/exec';
-        const SHEET_ID = '117ZPtH4-2vgDPQh-tInjyjI9GE5xN82evgVFikvcNFQ';
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ABC Szalunki - Formularz Dzierżawy</title>
         
+        <script src="https://cdn.tailwindcss.com"></script>
+        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-        function toggleClientType() {
-            const clientType = document.querySelector('input[name="clientType"]:checked')?.value;
-            const firmaSection = document.getElementById('firmaSection');
-            const osobaSection = document.getElementById('osobaSection');
-            
-            if (clientType === 'firma') {
-                firmaSection.classList.remove('hidden');
-                osobaSection.classList.add('hidden');
-            } else if (clientType === 'osoba') {
-                osobaSection.classList.remove('hidden');
-                firmaSection.classList.add('hidden');
-            }
-        }
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.min.js"></script>
 
-        function collectFormData() {
-            const formData = {};
-            const inputs = document.querySelectorAll('input, textarea, select');
-            inputs.forEach(input => {
-                if (input.type === 'radio' || input.type === 'checkbox') {
-                    if (input.checked) formData[input.name] = input.value;
-                } else {
-                    formData[input.name] = input.value || '';
-                }
-            });
-            return formData;
-        }
-
-        // ==========================================
-        // FUNKCJA GENEROWANIA PDF - PDFMAKE Z POLSKIMI ZNAKAMI
-        // ==========================================
-        function createPDFWithNativeText(formData) {
-            const content = [];
-            
-            // HEADER - czerwone tło
-            content.push({
-                table: {
-                    widths: ['*'],
-                    body: [
-                        [{ text: 'ABC SZALUNKI', style: 'header', alignment: 'center', fillColor: '#dc2626', color: '#ffffff', margin: [0, 10, 0, 5] }],
-                        [{ text: 'FORMULARZ DZIERŻAWY', style: 'subheader', alignment: 'center', fillColor: '#dc2626', color: '#ffffff', margin: [0, 0, 0, 5] }],
-                        [{ text: 'Załącznik nr 4 - Dane kontaktowe Dzierżawcy', alignment: 'center', fillColor: '#dc2626', color: '#ffffff', margin: [0, 0, 0, 10] }]
-                    ]
-                },
-                layout: 'noBorders',
-                margin: [0, 0, 0, 20]
-            });
-            
-            // Funkcja dodawania sekcji
-            function addSection(title) {
-                content.push({
-                    text: title,
-                    style: 'sectionHeader',
-                    margin: [0, 10, 0, 5]
-                });
-                content.push({
-                    canvas: [
-                        {
-                            type: 'line',
-                            x1: 0, y1: 0,
-                            x2: 515, y2: 0,
-                            lineWidth: 1,
-                            lineColor: '#dc2626'
-                        }
-                    ],
-                    margin: [0, 0, 0, 10]
-                });
-            }
-            
-            // Funkcja dodawania pola
-            function addField(label, value) {
-                if (!value) return;
-                content.push({
-                    text: [
-                        { text: label + ':\n', bold: true, fontSize: 9, color: '#3c3c3c' },
-                        { text: value + '\n', fontSize: 9 }
-                    ],
-                    margin: [0, 2, 0, 4]
-                });
-            }
-            
-            // TYP DZIERŻAWCY
-            addSection('TYP DZIERŻAWCY');
-            const clientTypeText = formData.clientType === 'firma' ? 'Firma' : 
-                                 formData.clientType === 'osoba' ? 'Osoba fizyczna' : 'Nie wybrano';
-            addField('Wybrany typ', clientTypeText);
-            addField('Region', formData.region || 'Nie wybrano');
-            
-            // DANE FIRMY
-            if (formData.clientType === 'firma') {
-                addSection('1. DANE DZIERŻAWCY - FIRMA');
-                addField('NIP', formData.nip);
-                addField('REGON', formData.regon);
-                addField('KRS', formData.krs);
-                addField('Telefon', formData.phone);
-                addField('E-mail do faktur', formData.invoiceEmail);
-                
-                if (formData.applicantNameCompany || formData.applicantPhoneCompany || formData.applicantEmailCompany) {
-                    content.push({ text: 'Osoba wnioskująca (jeśli inna niż dzierżawca):', bold: true, margin: [0, 5, 0, 3], color: '#666666' });
-                    addField('Imię i nazwisko', formData.applicantNameCompany);
-                    addField('Telefon', formData.applicantPhoneCompany);
-                    addField('E-mail', formData.applicantEmailCompany);
-                }
-            }
-            
-            // DANE OSOBY FIZYCZNEJ
-            if (formData.clientType === 'osoba') {
-                addSection('1. DANE DZIERŻAWCY - OSOBA FIZYCZNA');
-                addField('Imię i nazwisko', formData.fullName);
-                addField('PESEL', formData.pesel);
-                addField('Telefon', formData.phonePrivate);
-                addField('E-mail', formData.emailPrivate);
-                
-                if (formData.applicantName || formData.applicantPhone || formData.applicantEmail) {
-                    content.push({ text: 'Osoba wnioskująca (jeśli inna niż dzierżawca):', bold: true, margin: [0, 5, 0, 3], color: '#666666' });
-                    addField('Imię i nazwisko', formData.applicantName);
-                    addField('Telefon', formData.applicantPhone);
-                    addField('E-mail', formData.applicantEmail);
-                }
-            }
-            
-            // INWESTYCJA
-            addSection('2. INWESTYCJA');
-            addField('Nazwa inwestycji', formData.investmentName);
-            addField('Adres budowy', formData.constructionAddress);
-            addField('Data rozpoczęcia', formData.startDate);
-            addField('Przewidywany okres dzierżawy', formData.rentalPeriod);
-            
-            // WYKONAWCA
-            addSection('3. WYKONAWCA');
-            addField('Nazwa wykonawcy', formData.contractorName);
-            addField('Osoba kontaktowa', formData.contactPerson);
-            addField('Telefon kontaktowy', formData.contractorPhone);
-            addField('Telefon na budowę', formData.constructionPhone);
-            addField('Dodatkowe informacje', formData.contractorNotes);
-            
-            // INWESTOR
-            if (formData.investorName || formData.investorNip || formData.investorPhone || formData.investorEmail) {
-                addSection('4. INWESTOR');
-                addField('Nazwa inwestora', formData.investorName);
-                addField('NIP inwestora', formData.investorNip);
-                addField('Telefon', formData.investorPhone);
-                addField('E-mail', formData.investorEmail);
-            }
-            
-            // GENERALNY WYKONAWCA
-            if (formData.generalContractorName || formData.generalContractorNip || formData.generalContractorPhone) {
-                addSection('5. GENERALNY WYKONAWCA');
-                addField('Nazwa generalnego wykonawcy', formData.generalContractorName);
-                addField('NIP generalnego wykonawcy', formData.generalContractorNip);
-                addField('Telefon', formData.generalContractorPhone);
-            }
-            
-            // KIEROWNIK BUDOWY
-            if (formData.constructionManagerName || formData.constructionManagerPhone || formData.constructionManagerEmail) {
-                addSection('6. KIEROWNIK BUDOWY');
-                addField('Imię i nazwisko', formData.constructionManagerName);
-                addField('Telefon', formData.constructionManagerPhone);
-                addField('E-mail', formData.constructionManagerEmail);
-            }
-            
-            // UWAGI
-            if (formData.requirements) {
-                addSection('7. UWAGI/OPIS ZAPOTRZEBOWANIA');
-                addField('Opis', formData.requirements);
-            }
-            
-            // ŹRÓDŁO KONTAKTU
-            if (formData.contactSource) {
-                addSection('8. ŹRÓDŁO KONTAKTU DO ABC SZALUNKI');
-                addField('Skąd kontakt', formData.contactSource);
-            }
-            
-            // ZGODA RODO
-            addSection('ZGODA RODO');
-            const rodoStatus = formData.dataConsent ? 'WYRAŻONA' : 'NIE WYRAŻONA';
-            addField('Status zgody na przetwarzanie danych osobowych', rodoStatus);
-            
-            content.push({
-                text: 'Administrator danych: Grupa ABC szalunki\n(ABC Szalunki Zbigniew Szarawarski, Maciej Szarawarski PHU PRATA, PRATA Sp. z o.o.)',
-                fontSize: 8,
-                color: '#666666',
-                margin: [0, 5, 0, 0]
-            });
-            
-            // Definicja dokumentu
-            const docDefinition = {
-                content: content,
-                styles: {
-                    header: {
-                        fontSize: 24,
-                        bold: true
-                    },
-                    subheader: {
-                        fontSize: 14,
-                        bold: true
-                    },
-                    sectionHeader: {
-                        fontSize: 12,
-                        bold: true,
-                        color: '#dc2626'
-                    }
-                },
-                footer: function(currentPage, pageCount) {
-                    return {
-                        columns: [
-                            {
-                                text: 'ABC Szalunki | ul. Skotnicka 272, 30-394 Kraków | NIP: 6762382380\nwww.abcszalunki.pl | Data: ' + new Date().toLocaleDateString('pl-PL') + ' | Strona ' + currentPage + '/' + pageCount,
-                                alignment: 'center',
-                                fontSize: 8,
-                                color: '#808080'
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ['Inter', 'sans-serif'],
+                        },
+                        colors: {
+                            brand: {
+                                red: '#dc2626',
+                                dark: '#1f2937',
+                                gray: '#f3f4f6'
                             }
-                        ],
-                        margin: [20, 10]
-                    };
-                },
-                pageMargins: [40, 60, 40, 50],
-                defaultStyle: {
-                    font: 'Roboto'
+                        }
+                    }
                 }
-            };
+            }
+        </script>
+
+        <style>
+            /* Subtelny wzór tła a'la papier techniczny */
+            body {
+                background-color: #f8fafc;
+                background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+                background-size: 24px 24px;
+            }
             
-            // Zwróć obiekt z metodami
-            return {
-                save: function(filename) {
-                    // Robimy kopię (JSON.parse/stringify), aby pdfmake nie modyfikował oryginału
-                    const docDefinitionCopy = JSON.parse(JSON.stringify(docDefinition));
-                    pdfMake.createPdf(docDefinitionCopy).download(filename);
-                },
-                getBase64: function() {
-                    return new Promise((resolve) => {
-                        // Tutaj też robimy świeżą kopię dla Base64
-                        const docDefinitionCopy = JSON.parse(JSON.stringify(docDefinition));
-                        pdfMake.createPdf(docDefinitionCopy).getBase64((data) => {
-                            resolve('data:application/pdf;base64,' + data);
+            /* Ukrywanie scrollbara dla estetyki w niektórych kontenerach */
+            .no-scrollbar::-webkit-scrollbar {
+                display: none;
+            }
+
+            /* Custom Input Styling Transition */
+            .input-modern {
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            
+            .radio-card-selected {
+                border-color: #dc2626;
+                background-color: #fef2f2;
+                box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.1), 0 2px 4px -1px rgba(220, 38, 38, 0.06);
+            }
+        </style>
+    </head>
+
+    <body class="text-slate-800 antialiased min-h-screen pb-12">
+
+        <div class="h-2 w-full bg-gradient-to-r from-red-700 via-red-600 to-red-500 fixed top-0 z-50"></div>
+
+        <header class="bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-200 sticky top-0 z-40 mt-2">
+            <div class="container mx-auto px-4 py-4 md:py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="bg-red-100 p-2 rounded-lg">
+                        <div class="text-3xl">🏗️</div>
+                    </div>
+                    <div class="text-left">
+                        <div class="text-2xl font-bold text-slate-900 tracking-tight">ABC SZALUNKI</div>
+                        <div class="text-xs text-slate-500 font-medium uppercase tracking-wider">Wynajem szalunków</div>
+                    </div>
+                </div>
+                <div class="text-center md:text-right">
+                    <h1 class="text-xl font-bold text-slate-800">Formularz Dzierżawy</h1>
+                    <p class="text-sm text-slate-500">Załącznik nr 4 - Dane Dzierżawcy</p>
+                </div>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-4 py-8 md:py-12">
+            
+            <form id="formularzForm" class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
+                
+                <div class="bg-slate-50 px-8 py-6 border-b border-slate-100">
+                    <p class="text-slate-600 text-sm">Wypełnij poniższe dane, aby wygenerować umowę dzierżawy. Pola oznaczone gwiazdką (*) są obowiązkowe.</p>
+                </div>
+
+                <div class="p-6 md:p-10 space-y-10">
+
+                    <section>
+                        <label class="block text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Krok 1: Wybierz typ klienta *</label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <label class="cursor-pointer group relative">
+                                <input type="radio" name="clientType" value="firma" class="peer sr-only" onchange="toggleClientType()" required>
+                                <div class="p-6 rounded-xl border-2 border-slate-200 bg-white hover:border-red-300 transition-all duration-300 peer-checked:border-red-600 peer-checked:bg-red-50/50 peer-checked:shadow-lg flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-2xl group-hover:bg-red-100 transition-colors peer-checked:bg-red-100 peer-checked:text-red-600">
+                                        🏢
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-lg text-slate-800 peer-checked:text-red-700">Firma</h3>
+                                        <p class="text-sm text-slate-500">Spółki, jednoosobowa działalność</p>
+                                    </div>
+                                    <div class="absolute top-6 right-6 w-6 h-6 border-2 border-slate-300 rounded-full peer-checked:border-red-600 peer-checked:bg-red-600 transition-all"></div>
+                                </div>
+                            </label>
+
+                            <label class="cursor-pointer group relative">
+                                <input type="radio" name="clientType" value="osoba" class="peer sr-only" onchange="toggleClientType()" required>
+                                <div class="p-6 rounded-xl border-2 border-slate-200 bg-white hover:border-red-300 transition-all duration-300 peer-checked:border-red-600 peer-checked:bg-red-50/50 peer-checked:shadow-lg flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-2xl group-hover:bg-red-100 transition-colors peer-checked:bg-red-100 peer-checked:text-red-600">
+                                        👤
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-lg text-slate-800 peer-checked:text-red-700">Osoba fizyczna</h3>
+                                        <p class="text-sm text-slate-500">Klienci indywidualni</p>
+                                    </div>
+                                    <div class="absolute top-6 right-6 w-6 h-6 border-2 border-slate-300 rounded-full peer-checked:border-red-600 peer-checked:bg-red-600 transition-all"></div>
+                                </div>
+                            </label>
+                        </div>
+                    </section>
+
+                    <hr class="border-slate-100">
+
+                    <div id="firmaSection" class="hidden animate-fade-in-down">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-red-600 text-white font-bold text-sm">1</span>
+                            <h3 class="text-xl font-bold text-slate-800">Dane firmy</h3>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                            <div class="group">
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">NIP *</label>
+                                <div class="relative">
+                                    <input type="text" name="nip" id="nipInput" onblur="pobierzDaneFirmyZGUS()" 
+                                        class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block p-3 input-modern placeholder-slate-400" placeholder="np. 1234567890">
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+                                        🔍
+                                    </div>
+                                </div>
+                                <span id="nipStatus" class="text-xs text-slate-500 mt-1 block h-4"></span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">REGON</label>
+                                <input type="text" name="regon" id="regonInput" readonly
+                                    class="w-full bg-slate-100 border border-slate-200 text-slate-500 text-sm rounded-lg focus:ring-0 focus:border-slate-200 block p-3 cursor-not-allowed">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">KRS</label>
+                                <input type="text" name="krs" id="krsInput" readonly
+                                    class="w-full bg-slate-100 border border-slate-200 text-slate-500 text-sm rounded-lg focus:ring-0 focus:border-slate-200 block p-3 cursor-not-allowed">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">Osoba upoważniona *</label>
+                                <input type="text" name="authorizedPerson" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block p-3 input-modern">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">Telefon *</label>
+                                <input type="tel" name="phone" placeholder="+48..." class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block p-3 input-modern">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-8">
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">E-mail do faktur *</label>
+                            <input type="email" name="invoiceEmail" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block p-3 input-modern">
+                        </div>
+
+                        <div class="bg-slate-50/80 rounded-xl p-5 border border-slate-200/60">
+                            <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-slate-400 rounded-full"></span>
+                                Osoba wnioskująca (opcjonalne)
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <input type="text" name="applicantNameCompany" placeholder="Imię i nazwisko" class="w-full bg-white border border-slate-200 text-sm rounded-lg p-2.5 focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none transition-colors">
+                                <input type="tel" name="applicantPhoneCompany" placeholder="Telefon" class="w-full bg-white border border-slate-200 text-sm rounded-lg p-2.5 focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none transition-colors">
+                                <input type="email" name="applicantEmailCompany" placeholder="E-mail" class="w-full bg-white border border-slate-200 text-sm rounded-lg p-2.5 focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none transition-colors">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="osobaSection" class="hidden animate-fade-in-down">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-red-600 text-white font-bold text-sm">1</span>
+                            <h3 class="text-xl font-bold text-slate-800">Dane osoby fizycznej</h3>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">Imię i nazwisko *</label>
+                                <input type="text" name="fullName" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block p-3 input-modern">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">PESEL</label>
+                                <input type="text" name="pesel" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block p-3 input-modern">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">Telefon *</label>
+                                <input type="tel" name="phonePrivate" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block p-3 input-modern">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">E-mail *</label>
+                                <input type="email" name="emailPrivate" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block p-3 input-modern">
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50/80 rounded-xl p-5 border border-slate-200/60">
+                            <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-slate-400 rounded-full"></span>
+                                Osoba wnioskująca (opcjonalne)
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <input type="text" name="applicantName" placeholder="Imię i nazwisko" class="w-full bg-white border border-slate-200 text-sm rounded-lg p-2.5 focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none transition-colors">
+                                <input type="tel" name="applicantPhone" placeholder="Telefon" class="w-full bg-white border border-slate-200 text-sm rounded-lg p-2.5 focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none transition-colors">
+                                <input type="email" name="applicantEmail" placeholder="E-mail" class="w-full bg-white border border-slate-200 text-sm rounded-lg p-2.5 focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none transition-colors">
+                            </div>
+                        </div>
+                    </div>
+
+                    <section>
+                        <label class="block text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Region inwestycji *</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <label class="cursor-pointer group">
+                                <input type="radio" name="region" value="Kraków" class="peer sr-only" required>
+                                <div class="p-4 rounded-lg border border-slate-200 hover:border-red-300 bg-white transition-all text-center peer-checked:border-red-600 peer-checked:bg-red-50 peer-checked:text-red-700">
+                                    <div class="text-2xl mb-2 grayscale group-hover:grayscale-0 peer-checked:grayscale-0 transition-all"></div>
+                                    <span class="font-semibold">Kraków</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer group">
+                                <input type="radio" name="region" value="Śląsk" class="peer sr-only" required>
+                                <div class="p-4 rounded-lg border border-slate-200 hover:border-red-300 bg-white transition-all text-center peer-checked:border-red-600 peer-checked:bg-red-50 peer-checked:text-red-700">
+                                    <div class="text-2xl mb-2 grayscale group-hover:grayscale-0 peer-checked:grayscale-0 transition-all"></div>
+                                    <span class="font-semibold">Śląsk</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer group">
+                                <input type="radio" name="region" value="Łódź" class="peer sr-only" required>
+                                <div class="p-4 rounded-lg border border-slate-200 hover:border-red-300 bg-white transition-all text-center peer-checked:border-red-600 peer-checked:bg-red-50 peer-checked:text-red-700">
+                                    <div class="text-2xl mb-2 grayscale group-hover:grayscale-0 peer-checked:grayscale-0 transition-all"></div>
+                                    <span class="font-semibold">Łódź</span>
+                                </div>
+                            </label>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-slate-800 text-white font-bold text-sm">2</span>
+                            <h3 class="text-xl font-bold text-slate-800">Dane inwestycji</h3>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">Nazwa inwestycji *</label>
+                                <input type="text" name="investmentName" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-slate-800 focus:border-slate-800 block p-3 input-modern" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">Adres budowy *</label>
+                                <input type="text" name="constructionAddress" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-slate-800 focus:border-slate-800 block p-3 input-modern" required>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">Data rozpoczęcia *</label>
+                                <input type="date" name="startDate" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-slate-800 focus:border-slate-800 block p-3 input-modern" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">Przewidywany okres *</label>
+                                <div class="relative">
+                                    <select name="rentalPeriod" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-slate-800 focus:border-slate-800 block p-3 appearance-none input-modern" required>
+                                        <option value="">Wybierz okres</option>
+                                        <option value="8 dni">8 dni</option>
+                                        <option value="10-15 dni">10-15 dni</option>
+                                        <option value="15-30 dni">15-30 dni</option>
+                                        <option value="30-60 dni">30-60 dni</option>
+                                        <option value="60 dni i więcej">60 dni i więcej</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-500">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <hr class="border-slate-100">
+
+                    <section>
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-slate-800 text-white font-bold text-sm">3</span>
+                            <h3 class="text-xl font-bold text-slate-800">Wykonawca</h3>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">Nazwa wykonawcy *</label>
+                                <input type="text" name="contractorName" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-slate-800 focus:border-slate-800 block p-3 input-modern" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">Osoba kontaktowa</label>
+                                <input type="text" name="contactPerson" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-slate-800 focus:border-slate-800 block p-3 input-modern">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">Telefon</label>
+                                <input type="tel" name="contractorPhone" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-slate-800 focus:border-slate-800 block p-3 input-modern">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">Telefon na budowę</label>
+                                <input type="tel" name="constructionPhone" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-slate-800 focus:border-slate-800 block p-3 input-modern">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">Dodatkowe informacje</label>
+                            <textarea name="contractorNotes" rows="2" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-slate-800 focus:border-slate-800 block p-3 input-modern transition-all"></textarea>
+                        </div>
+                    </section>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        
+                        <section class="bg-white border border-slate-100 rounded-xl p-5 shadow-sm">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-xs">4</span>
+                                <h3 class="text-lg font-bold text-slate-700">Inwestor</h3>
+                            </div>
+                            <div class="space-y-4">
+                                <input type="text" name="investorName" placeholder="Nazwa inwestora" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-lg p-3 focus:ring-slate-800 focus:border-slate-800 outline-none">
+                                <input type="text" name="investorNip" placeholder="NIP" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-lg p-3 focus:ring-slate-800 focus:border-slate-800 outline-none">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <input type="tel" name="investorPhone" placeholder="Telefon" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-lg p-3 focus:ring-slate-800 focus:border-slate-800 outline-none">
+                                    <input type="email" name="investorEmail" placeholder="E-mail" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-lg p-3 focus:ring-slate-800 focus:border-slate-800 outline-none">
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="bg-white border border-slate-100 rounded-xl p-5 shadow-sm">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-xs">5</span>
+                                <h3 class="text-lg font-bold text-slate-700">Generalny Wykonawca</h3>
+                            </div>
+                            <div class="space-y-4">
+                                <input type="text" name="generalContractorName" placeholder="Nazwa GW" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-lg p-3 focus:ring-slate-800 focus:border-slate-800 outline-none">
+                                <input type="text" name="generalContractorNip" placeholder="NIP GW" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-lg p-3 focus:ring-slate-800 focus:border-slate-800 outline-none">
+                                <input type="tel" name="generalContractorPhone" placeholder="Telefon" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-lg p-3 focus:ring-slate-800 focus:border-slate-800 outline-none">
+                            </div>
+                        </section>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <section class="bg-white border border-slate-100 rounded-xl p-5 shadow-sm">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-xs">6</span>
+                                <h3 class="text-lg font-bold text-slate-700">Kierownik budowy</h3>
+                            </div>
+                            <div class="space-y-4">
+                                <input type="text" name="constructionManagerName" placeholder="Imię i nazwisko" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-lg p-3 focus:ring-slate-800 focus:border-slate-800 outline-none">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <input type="tel" name="constructionManagerPhone" placeholder="Telefon" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-lg p-3 focus:ring-slate-800 focus:border-slate-800 outline-none">
+                                    <input type="email" name="constructionManagerEmail" placeholder="E-mail" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-lg p-3 focus:ring-slate-800 focus:border-slate-800 outline-none">
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="bg-white border border-slate-100 rounded-xl p-5 shadow-sm">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-xs">7</span>
+                                <h3 class="text-lg font-bold text-slate-700">Uwagi / Zapotrzebowanie</h3>
+                            </div>
+                            <textarea name="requirements" rows="4" placeholder="Opisz potrzeby..." class="w-full bg-slate-50 border border-slate-200 text-sm rounded-lg p-3 focus:ring-slate-800 focus:border-slate-800 outline-none resize-none"></textarea>
+                        </section>
+                    </div>
+
+                    <section>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 ml-1">8. Skąd kontakt do ABC Szalunki</label>
+                        <input type="text" name="contactSource" placeholder="np. strona internetowa, polecenie, reklama" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-lg focus:ring-slate-800 focus:border-slate-800 block p-3 input-modern">
+                    </section>
+
+                    <div class="bg-slate-50 rounded-xl p-6 border border-slate-100">
+                        <h4 class="font-bold text-slate-800 mb-3 text-sm flex items-center gap-2">
+                            🛡️ Informacja o przetwarzaniu danych osobowych (RODO)
+                        </h4>
+                        <div class="text-xs text-slate-500 space-y-2 h-32 overflow-y-auto pr-2 custom-scrollbar border-b border-slate-200 pb-4 mb-4 leading-relaxed">
+                            <p>Zgodnie z ustawą odnośnie ochrony danych osobowych oraz Rozporządzenia Parlamentu Europejskiego i Rady (UE) 2016/679 Administratorem Danych Osobowych (ADO) jest Grupa ABC szalunki reprezentowana przez: ABC Szalunki Zbigniew Szarawarski NIP: 6791745313, Maciej Szarawarski PHU PRATA NIP: 6762382380, PRATA Sp. z o. o. NIP 6762599837.</p>
+                            <p>Dane przetwarzane są w celu: przedstawienia oferty umowy, realizacji zawartej umowy, działań marketingu bezpośredniego oferowanych przez ADO usług. Odbiorcami udostępnionych danych osobowych będzie wyłącznie ADO oraz podmioty współpracujące.</p>
+                            <p>Podanie danych jest dobrowolne, jednak brak ich udostępnienia skutkuje brakiem możliwości realizacji zawartej z ADO Umowy.</p>
+                        </div>
+
+                        <label class="flex items-start cursor-pointer group">
+                            <div class="relative flex items-center">
+                                <input type="checkbox" name="dataConsent" required class="peer sr-only">
+                                <div class="w-5 h-5 border-2 border-slate-300 rounded bg-white peer-checked:bg-red-600 peer-checked:border-red-600 transition-all"></div>
+                                <svg class="absolute w-3 h-3 text-white hidden peer-checked:block left-1 top-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                            </div>
+                            <span class="ml-3 text-xs text-slate-600 group-hover:text-slate-800 transition-colors">Potwierdzam zgodność danych do umowy i wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z powyższą informacją. *</span>
+                        </label>
+                    </div>
+
+                    <div id="statusMessage" class="hidden p-4 rounded-lg text-sm font-medium text-center animate-pulse"></div>
+
+                    <div class="pt-4 pb-2 text-center">
+                        <button type="button" onclick="submitForm()" 
+                            class="group relative inline-flex items-center justify-center px-10 py-4 text-lg font-bold text-white transition-all duration-200 bg-gradient-to-r from-red-600 to-red-700 rounded-xl hover:from-red-500 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600 shadow-lg shadow-red-600/30 hover:shadow-red-600/40 hover:-translate-y-1 w-full md:w-auto">
+                            <span class="mr-2">📄</span>
+                            Wyślij formularz
+                            <svg class="w-5 h-5 ml-2 -mr-1 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                        </button>
+                        <p class="mt-4 text-xs text-slate-400">Po kliknięciu zostanie wygenerowany dokument PDF.</p>
+                    </div>
+
+                </div>
+            </form>
+        </main>
+
+        <footer class="text-center text-slate-400 text-xs py-8">
+            &copy; 2026 ABC Szalunki. Wszelkie prawa zastrzeżone.
+        </footer>
+
+        <script>
+            const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx-IlRE0Vs4UyCZDiptLbhxhz1IHloUmvlERLjbE_voqJZhgZn7TumrGu022LjlaQGkFA/exec';
+            const SHEET_ID = '117ZPtH4-2vgDPQh-tInjyjI9GE5xN82evgVFikvcNFQ';
+            
+            // ==========================================
+            // FUNKCJA POBIERANIA DANYCH FIRMY Z GUS API
+            // ==========================================
+            async function pobierzDaneFirmyZGUS() {
+                const nipInput = document.getElementById('nipInput');
+                const regonInput = document.getElementById('regonInput');
+                const krsInput = document.getElementById('krsInput');
+                const nipStatus = document.getElementById('nipStatus');
+                
+                // Pobierz i wyczyść NIP
+                let nip = nipInput.value.replace(/[-\s]/g, '');
+                
+                // Walidacja NIP
+                if (!nip || nip.length === 0) {
+                    return;
+                }
+                
+                if (!/^\d{10}$/.test(nip)) {
+                    nipStatus.textContent = '⚠️ NIP musi składać się z 10 cyfr';
+                    nipStatus.className = 'text-xs text-red-600';
+                    return;
+                }
+                
+                // Pokaż status ładowania i zablokuj pola
+                nipStatus.textContent = 'Pobieranie danych...';
+                nipStatus.className = 'text-xs text-blue-600';
+                regonInput.value = '';
+                krsInput.value = '';
+                regonInput.setAttribute('readonly', 'readonly');
+                regonInput.classList.add('bg-gray-50');
+                krsInput.setAttribute('readonly', 'readonly');
+                krsInput.classList.add('bg-gray-50');
+                
+                try {
+                    // Metoda 1: Próba przez fetch z timeout
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 sekund
+                    
+                    try {
+                        const response = await fetch(`${APPS_SCRIPT_URL}?action=getCompanyData&nip=${nip}`, {
+                            method: 'GET',
+                            signal: controller.signal
                         });
+                        
+                        clearTimeout(timeoutId);
+                        
+                        const data = await response.json();
+                        
+                        if (data.error) {
+                            nipStatus.textContent = '⚠️ ' + data.error;
+                            nipStatus.className = 'text-xs text-red-600';
+                            odblokujPolaDoRecznegoWprowadzenia();
+                            return;
+                        }
+                        
+                        if (data.success) {
+                            // Sprawdź czy REGON i KRS są rzeczywiście wypełnione
+                            const hasRegon = data.regon && data.regon.trim() !== '';
+                            const hasKrs = data.krs && data.krs.trim() !== '';
+                            
+                            // Uzupełnij pola REGON i KRS
+                            regonInput.value = data.regon || '';
+                            krsInput.value = data.krs || '';
+                            
+                            // Jeśli brak REGON lub KRS - odblokuj pola
+                            if (!hasRegon && !hasKrs) {
+                                let statusText = 'Zweryfikuj dane ';
+                                statusText += ' - uzupełnij ręcznie';
+                                
+                                if (data.nazwa) {
+                                    statusText += ` (${data.nazwa.substring(0, 40)}...)`;
+                                }
+                                
+                                nipStatus.textContent = statusText;
+                                nipStatus.className = 'text-xs text-orange-600';
+                                odblokujPolaDoRecznegoWprowadzenia();
+                                return;
+                            }
+                            
+                            // Pełny sukces - wszystkie dane pobrane
+                            let statusText = 'Dane pobrane';
+                            if (data.nazwa) {
+                                statusText += ` (${data.nazwa.substring(0, 50)}${data.nazwa.length > 50 ? '...' : ''})`;
+                            }
+                            nipStatus.textContent = statusText;
+                            nipStatus.className = 'text-xs text-green-600';
+                            return;
+                        }
+                        
+                        nipStatus.textContent = '⚠️ Nie znaleziono firmy o podanym NIP - wprowadź dane ręcznie';
+                        nipStatus.className = 'text-xs text-orange-600';
+                        odblokujPolaDoRecznegoWprowadzenia();
+                        
+                    } catch (fetchError) {
+                        // Jeśli fetch nie zadziałał, spróbuj JSONP
+                        console.log('Fetch failed, trying JSONP...', fetchError);
+                        
+                        const callbackName = 'gusCallback_' + Date.now();
+                        const url = `${APPS_SCRIPT_URL}?action=getCompanyData&nip=${nip}&callback=${callbackName}`;
+                        
+                        const dataPromise = new Promise((resolve, reject) => {
+                            const timeout = setTimeout(() => {
+                                cleanup();
+                                reject(new Error('JSONP Timeout'));
+                            }, 20000);
+                            
+                            window[callbackName] = function(data) {
+                                clearTimeout(timeout);
+                                cleanup();
+                                resolve(data);
+                            };
+                            
+                            const cleanup = () => {
+                                delete window[callbackName];
+                                if (script && script.parentNode) {
+                                    script.parentNode.removeChild(script);
+                                }
+                            };
+                        });
+                        
+                        const script = document.createElement('script');
+                        script.src = url;
+                        script.onerror = () => {
+                            throw new Error('Script load error');
+                        };
+                        document.body.appendChild(script);
+                        
+                        const data = await dataPromise;
+                        
+                        if (data.error) {
+                            nipStatus.textContent = '⚠️ ' + data.error;
+                            nipStatus.className = 'text-xs text-red-600';
+                            odblokujPolaDoRecznegoWprowadzenia();
+                            return;
+                        }
+                        
+                        if (data.success) {
+                            // Sprawdź czy REGON i KRS są rzeczywiście wypełnione
+                            const hasRegon = data.regon && data.regon.trim() !== '';
+                            const hasKrs = data.krs && data.krs.trim() !== '';
+                            
+                            regonInput.value = data.regon || '';
+                            krsInput.value = data.krs || '';
+                            
+                            // Jeśli brak REGON lub KRS - odblokuj pola
+                            if (!hasRegon || !hasKrs) {
+                                let statusText = '⚠️ NIP zweryfikowany, ale brak ';
+                                if (!hasRegon && !hasKrs) {
+                                    statusText += 'REGON i KRS';
+                                } else if (!hasRegon) {
+                                    statusText += 'REGON';
+                                } else {
+                                    statusText += 'KRS';
+                                }
+                                statusText += ' - uzupełnij ręcznie';
+                                
+                                if (data.nazwa) {
+                                    statusText += ` (${data.nazwa.substring(0, 40)}...)`;
+                                }
+                                
+                                nipStatus.textContent = statusText;
+                                nipStatus.className = 'text-xs text-orange-600';
+                                odblokujPolaDoRecznegoWprowadzenia();
+                                return;
+                            }
+                            
+                            let statusText = '✅ Dane pobrane z GUS';
+                            if (data.nazwa) {
+                                statusText += ` (${data.nazwa.substring(0, 50)}${data.nazwa.length > 50 ? '...' : ''})`;
+                            }
+                            nipStatus.textContent = statusText;
+                            nipStatus.className = 'text-xs text-green-600';
+                        } else {
+                            nipStatus.textContent = '⚠️ Nie znaleziono firmy o podanym NIP - wprowadź dane ręcznie';
+                            nipStatus.className = 'text-xs text-orange-600';
+                            odblokujPolaDoRecznegoWprowadzenia();
+                        }
+                    }
+                    
+                } catch (error) {
+                    console.error('Błąd pobierania danych GUS:', error);
+                    nipStatus.textContent = '⚠️ Błąd połączenia - wprowadź dane ręcznie';
+                    nipStatus.className = 'text-xs text-red-600';
+                    odblokujPolaDoRecznegoWprowadzenia();
+                }
+            }
+
+            function odblokujPolaDoRecznegoWprowadzenia() {
+                const regonInput = document.getElementById('regonInput');
+                const krsInput = document.getElementById('krsInput');
+
+                regonInput.removeAttribute('readonly');
+                regonInput.classList.remove('bg-gray-50');
+                regonInput.classList.remove('cursor-not-allowed'); // Usunięcie klasy kursora
+                regonInput.classList.add('bg-white'); // Dodanie tła białego
+                
+                krsInput.removeAttribute('readonly');
+                krsInput.classList.remove('bg-gray-50');
+                krsInput.classList.remove('cursor-not-allowed');
+                krsInput.classList.add('bg-white');
+            }
+
+            // Pobierz dane po naciśnięciu Enter w polu NIP
+            document.addEventListener('DOMContentLoaded', function () {
+                const nipInput = document.getElementById('nipInput');
+                if (nipInput) {
+                    nipInput.addEventListener('keypress', function (e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            pobierzDaneFirmyZGUS();
+                        }
                     });
                 }
-            };
-        }
+            });
 
-        function showStatus(message, type) {
-            const statusEl = document.getElementById('statusMessage');
-            statusEl.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'bg-blue-100', 'text-green-800', 'text-red-800', 'text-blue-800');
-            
-            if (type === 'success') {
-                statusEl.classList.add('bg-green-100', 'text-green-800');
-            } else if (type === 'error') {
-                statusEl.classList.add('bg-red-100', 'text-red-800');
-            } else {
-                statusEl.classList.add('bg-blue-100', 'text-blue-800');
+            function toggleClientType() {
+                const clientType = document.querySelector('input[name="clientType"]:checked')?.value;
+                const firmaSection = document.getElementById('firmaSection');
+                const osobaSection = document.getElementById('osobaSection');
+
+                if (clientType === 'firma') {
+                    firmaSection.classList.remove('hidden');
+                    osobaSection.classList.add('hidden');
+                } else if (clientType === 'osoba') {
+                    osobaSection.classList.remove('hidden');
+                    firmaSection.classList.add('hidden');
+                }
             }
-            
-            statusEl.textContent = message;
-        }
 
-        async function submitForm() {
-            const button = event.target;
-            const originalText = button.innerHTML;
-            button.innerHTML = '⏳ Przetwarzanie...';
-            button.disabled = true;
+            function collectFormData() {
+                const formData = {};
+                const inputs = document.querySelectorAll('input, textarea, select');
+                inputs.forEach(input => {
+                    if (input.type === 'radio' || input.type === 'checkbox') {
+                        if (input.checked) formData[input.name] = input.value;
+                    } else {
+                        formData[input.name] = input.value || '';
+                    }
+                });
+                return formData;
+            }
 
-            try {
-                const formData = collectFormData();
-                
-                // Walidacja
-                if (!formData.clientType) throw new Error('Wybierz typ dzierżawcy');
-                if (!formData.region) throw new Error('Wybierz region');
-                if (!formData.dataConsent) throw new Error('Musisz wyrazić zgodę na przetwarzanie danych osobowych');
-                if (!formData.investmentName) throw new Error('Wpisz nazwę inwestycji');
-                if (!formData.constructionAddress) throw new Error('Wpisz adres budowy');
-                if (!formData.contractorName) throw new Error('Wpisz nazwę wykonawcy');
+            // ==========================================
+            // FUNKCJA GENEROWANIA PDF - PDFMAKE Z POLSKIMI ZNAKAMI
+            // ==========================================
+            function createPDFWithNativeText(formData) {
+                const content = [];
 
-                showStatus('📄 Generowanie PDF z polskimi znakami (ą, ć, ę, ł, ń, ó, ś, ź, ż)...', 'info');
-                
-                const doc = createPDFWithNativeText(formData);
-                const timestamp = new Date().toISOString().slice(0,19).replace(/:/g, '-');
-                const filename = `ABC_Szalunki_Formularz_${timestamp}.pdf`;
-                
-                // Pobierz PDF lokalnie
-                doc.save(filename);
-                showStatus('✅ Formularz został pobrany w PDF! Wysyłanie do systemu...', 'success');
-
-                // Pobierz base64 dla uploadu
-                const pdfBase64 = await doc.getBase64();
-                
-                await fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        pdfBase64: pdfBase64,
-                        filename: filename,
-                        formData: formData
-                    })
+                // HEADER - czerwone tło
+                content.push({
+                    table: {
+                        widths: ['*'],
+                        body: [
+                            [{ text: 'ABC SZALUNKI', style: 'header', alignment: 'center', fillColor: '#dc2626', color: '#ffffff', margin: [0, 10, 0, 5] }],
+                            [{ text: 'FORMULARZ DZIERŻAWY', style: 'subheader', alignment: 'center', fillColor: '#dc2626', color: '#ffffff', margin: [0, 0, 0, 5] }],
+                            [{ text: 'Załącznik nr 4 - Dane kontaktowe Dzierżawcy', alignment: 'center', fillColor: '#dc2626', color: '#ffffff', margin: [0, 0, 0, 10] }]
+                        ]
+                    },
+                    layout: 'noBorders',
+                    margin: [0, 0, 0, 20]
                 });
 
-                showStatus('✅ Wysłano formularz! ', 'success');
+                // Funkcja dodawania sekcji
+                function addSection(title) {
+                    content.push({
+                        text: title,
+                        style: 'sectionHeader',
+                        margin: [0, 10, 0, 5]
+                    });
+                    content.push({
+                        canvas: [
+                            {
+                                type: 'line',
+                                x1: 0, y1: 0,
+                                x2: 515, y2: 0,
+                                lineWidth: 1,
+                                lineColor: '#dc2626'
+                            }
+                        ],
+                        margin: [0, 0, 0, 10]
+                    });
+                }
 
-            } catch (error) {
-                console.error('Błąd:', error);
-                showStatus('⚠️ ' + error.message, 'error');
+                // Funkcja dodawania pola
+                function addField(label, value) {
+                    if (!value) return;
+                    content.push({
+                        text: [
+                            { text: label + ':\n', bold: true, fontSize: 9, color: '#3c3c3c' },
+                            { text: value + '\n', fontSize: 9 }
+                        ],
+                        margin: [0, 2, 0, 4]
+                    });
+                }
+
+                // TYP DZIERŻAWCY
+                addSection('TYP DZIERŻAWCY');
+                const clientTypeText = formData.clientType === 'firma' ? 'Firma' :
+                    formData.clientType === 'osoba' ? 'Osoba fizyczna' : 'Nie wybrano';
+                addField('Wybrany typ', clientTypeText);
+                addField('Region', formData.region || 'Nie wybrano');
+
+                // DANE FIRMY
+                if (formData.clientType === 'firma') {
+                    addSection('1. DANE DZIERŻAWCY - FIRMA');
+                    addField('NIP', formData.nip);
+                    addField('REGON', formData.regon);
+                    addField('KRS', formData.krs);
+                    addField('Telefon', formData.phone);
+                    addField('E-mail do faktur', formData.invoiceEmail);
+
+                    if (formData.applicantNameCompany || formData.applicantPhoneCompany || formData.applicantEmailCompany) {
+                        content.push({ text: 'Osoba wnioskująca (jeśli inna niż dzierżawca):', bold: true, margin: [0, 5, 0, 3], color: '#666666' });
+                        addField('Imię i nazwisko', formData.applicantNameCompany);
+                        addField('Telefon', formData.applicantPhoneCompany);
+                        addField('E-mail', formData.applicantEmailCompany);
+                    }
+                }
+
+                // DANE OSOBY FIZYCZNEJ
+                if (formData.clientType === 'osoba') {
+                    addSection('1. DANE DZIERŻAWCY - OSOBA FIZYCZNA');
+                    addField('Imię i nazwisko', formData.fullName);
+                    addField('PESEL', formData.pesel);
+                    addField('Telefon', formData.phonePrivate);
+                    addField('E-mail', formData.emailPrivate);
+
+                    if (formData.applicantName || formData.applicantPhone || formData.applicantEmail) {
+                        content.push({ text: 'Osoba wnioskująca (jeśli inna niż dzierżawca):', bold: true, margin: [0, 5, 0, 3], color: '#666666' });
+                        addField('Imię i nazwisko', formData.applicantName);
+                        addField('Telefon', formData.applicantPhone);
+                        addField('E-mail', formData.applicantEmail);
+                    }
+                }
+
+                // INWESTYCJA
+                addSection('2. INWESTYCJA');
+                addField('Nazwa inwestycji', formData.investmentName);
+                addField('Adres budowy', formData.constructionAddress);
+                addField('Data rozpoczęcia', formData.startDate);
+                addField('Przewidywany okres dzierżawy', formData.rentalPeriod);
+
+                // WYKONAWCA
+                addSection('3. WYKONAWCA');
+                addField('Nazwa wykonawcy', formData.contractorName);
+                addField('Osoba kontaktowa', formData.contactPerson);
+                addField('Telefon kontaktowy', formData.contractorPhone);
+                addField('Telefon na budowę', formData.constructionPhone);
+                addField('Dodatkowe informacje', formData.contractorNotes);
+
+                // INWESTOR
+                if (formData.investorName || formData.investorNip || formData.investorPhone || formData.investorEmail) {
+                    addSection('4. INWESTOR');
+                    addField('Nazwa inwestora', formData.investorName);
+                    addField('NIP inwestora', formData.investorNip);
+                    addField('Telefon', formData.investorPhone);
+                    addField('E-mail', formData.investorEmail);
+                }
+
+                // GENERALNY WYKONAWCA
+                if (formData.generalContractorName || formData.generalContractorNip || formData.generalContractorPhone) {
+                    addSection('5. GENERALNY WYKONAWCA');
+                    addField('Nazwa generalnego wykonawcy', formData.generalContractorName);
+                    addField('NIP generalnego wykonawcy', formData.generalContractorNip);
+                    addField('Telefon', formData.generalContractorPhone);
+                }
+
+                // KIEROWNIK BUDOWY
+                if (formData.constructionManagerName || formData.constructionManagerPhone || formData.constructionManagerEmail) {
+                    addSection('6. KIEROWNIK BUDOWY');
+                    addField('Imię i nazwisko', formData.constructionManagerName);
+                    addField('Telefon', formData.constructionManagerPhone);
+                    addField('E-mail', formData.constructionManagerEmail);
+                }
+
+                // UWAGI
+                if (formData.requirements) {
+                    addSection('7. UWAGI/OPIS ZAPOTRZEBOWANIA');
+                    addField('Opis', formData.requirements);
+                }
+
+                // ŹRÓDŁO KONTAKTU
+                if (formData.contactSource) {
+                    addSection('8. ŹRÓDŁO KONTAKTU DO ABC SZALUNKI');
+                    addField('Skąd kontakt', formData.contactSource);
+                }
+
+                // ZGODA RODO
+                addSection('ZGODA RODO');
+                const rodoStatus = formData.dataConsent ? 'WYRAŻONA' : 'NIE WYRAŻONA';
+                addField('Status zgody na przetwarzanie danych osobowych', rodoStatus);
+
+                content.push({
+                    text: 'Administrator danych: Grupa ABC szalunki\n(ABC Szalunki Zbigniew Szarawarski, Maciej Szarawarski PHU PRATA, PRATA Sp. z o.o.)',
+                    fontSize: 8,
+                    color: '#666666',
+                    margin: [0, 5, 0, 0]
+                });
+
+                // Definicja dokumentu
+                const docDefinition = {
+                    content: content,
+                    styles: {
+                        header: {
+                            fontSize: 24,
+                            bold: true
+                        },
+                        subheader: {
+                            fontSize: 14,
+                            bold: true
+                        },
+                        sectionHeader: {
+                            fontSize: 12,
+                            bold: true,
+                            color: '#dc2626'
+                        }
+                    },
+                    footer: function (currentPage, pageCount) {
+                        return {
+                            stack: [
+                                {
+                                    canvas: [
+                                        {
+                                            type: 'line',
+                                            x1: 0, y1: 0,
+                                            x2: 515, y2: 0,
+                                            lineWidth: 0.5,
+                                            lineColor: '#cccccc'
+                                        }
+                                    ],
+                                    margin: [40, 0, 40, 5]
+                                },
+                                {
+                                    text: 'ABC Szalunki | ul. Skotnicka 272, 30-394 Kraków | NIP: 6762382380',
+                                    alignment: 'center',
+                                    fontSize: 8,
+                                    color: '#666666',
+                                    margin: [0, 0, 0, 2]
+                                },
+                                {
+                                    text: 'www.abcszalunki.pl | Data: ' + new Date().toLocaleDateString('pl-PL') + ' | Strona ' + currentPage + ' / ' + pageCount,
+                                    alignment: 'center',
+                                    fontSize: 8,
+                                    color: '#666666'
+                                }
+                            ],
+                            margin: [0, 10, 0, 0]
+                        };
+                    },
+                    pageMargins: [40, 60, 40, 60],
+                    defaultStyle: {
+                        font: 'Roboto'
+                    }
+                };
+
+                // Zwróć obiekt z metodami
+                return {
+                    save: function (filename) {
+                        const docDefinitionCopy = JSON.parse(JSON.stringify(docDefinition));
+                        pdfMake.createPdf(docDefinitionCopy).download(filename);
+                    },
+                    getBase64: function () {
+                        return new Promise((resolve) => {
+                            const docDefinitionCopy = JSON.parse(JSON.stringify(docDefinition));
+                            pdfMake.createPdf(docDefinitionCopy).getBase64((data) => {
+                                resolve('data:application/pdf;base64,' + data);
+                            });
+                        });
+                    }
+                };
             }
 
-            button.innerHTML = originalText;
-            button.disabled = false;
-        }
-    </script>
-</body>
-</html>
+            function showStatus(message, type) {
+                const statusEl = document.getElementById('statusMessage');
+                statusEl.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'bg-blue-100', 'text-green-800', 'text-red-800', 'text-blue-800');
+
+                if (type === 'success') {
+                    statusEl.classList.add('bg-green-100', 'text-green-800');
+                } else if (type === 'error') {
+                    statusEl.classList.add('bg-red-100', 'text-red-800');
+                } else {
+                    statusEl.classList.add('bg-blue-100', 'text-blue-800');
+                }
+
+                statusEl.textContent = message;
+            }
+
+            async function submitForm() {
+                const button = event.target;
+                const originalText = button.innerHTML;
+                button.innerHTML = '⏳ Przetwarzanie...';
+                button.disabled = true;
+
+                try {
+                    const formData = collectFormData();
+
+                    // Walidacja
+                    if (!formData.clientType) throw new Error('Wybierz typ dzierżawcy');
+                    if (!formData.region) throw new Error('Wybierz region');
+                    if (!formData.dataConsent) throw new Error('Musisz wyrazić zgodę na przetwarzanie danych osobowych');
+                    if (!formData.investmentName) throw new Error('Wpisz nazwę inwestycji');
+                    if (!formData.constructionAddress) throw new Error('Wpisz adres budowy');
+                    if (!formData.contractorName) throw new Error('Wpisz nazwę wykonawcy');
+
+                    showStatus('📄 Generowanie PDF z polskimi znakami (ą, ć, ę, ł, ń, ó, ś, ź, ż)...', 'info');
+
+                    const doc = createPDFWithNativeText(formData);
+                    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+                    const filename = `ABC_Szalunki_Formularz_${timestamp}.pdf`;
+
+                    // Pobierz PDF lokalnie
+                    doc.save(filename);
+                    showStatus('✅ Formularz został pobrany w PDF! Wysyłanie do systemu...', 'success');
+
+                    // Pobierz base64 dla uploadu
+                    const pdfBase64 = await doc.getBase64();
+
+                    await fetch(APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            pdfBase64: pdfBase64,
+                            filename: filename,
+                            formData: formData
+                        })
+                    });
+
+
+                    showStatus('✅ Wysłano formularz! Dziękujemy.', 'success');
+
+                } catch (error) {
+                    console.error('Błąd:', error);
+                    showStatus('⚠️ ' + error.message, 'error');
+                }
+
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        </script>
+    </body>
+
+    </html>
